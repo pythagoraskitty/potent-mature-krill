@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Demo</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+    <h1>Shared Storage Demo</h1>
+    
+    <h3>
+      <div id="toc">
+      Contents
+      <ul> 
+      </ul>
+      </div>
+    </h3>
+    <button id="darkModeButton">toggle dark mode</button>
+    <script src="/dark-mode"></script>
+   <br>
+    
+    <br>
+    <hr class="custom-divider">
+    <p>
+      <h2 id="Overview">Overview</h2>
+    </p>
+
+    <p>
+      <h3>
+        This is a demo of the new <a href="https://github.com/WICG/shared-storage/blob/main/README.md">Shared Storage API</a>.
+      </h3>
+    </p>
+
+   <p>
+     <h3>
+       See the <a href="https://github.com/WICG/shared-storage/blob/main/README.md">Shared Storage explainer</a> for more general information on Shared Storage. 
+    </h3>
+  </p>
+
+    <hr class="custom-divider">
+    <p>
+      <h2 id="setup">Demo Setup Instructions</h2>
+    </p>
+    
+    
+    <p>
+      <h3>
+        Shared Storage is enabled by default in Chrome versions 120.0.6099.29+ (and slightly earlier in some platforms).
+      </h3>
+    </p>
+  
+    <p>
+      <h3>
+        You can check your Chrome version number at <br><code-box>chrome://version</code-box> 
+      </h3> 
+    </p>
+  
+    <p>
+      <h3>
+        If you are running an eligible version of Chrome on Desktop, you should be able to run shared storage worklets from this site by overriding Privacy Sandbox enrollment for this site:
+            <ul>
+              <li>
+                Open a new tab and navigate to: 
+                <br><code-box>chrome://flags/#privacy-sandbox-enrollment-overrides</code-box>
+              </li>
+              <li>
+                Enter 
+                <br><code-box>https://potent-mature-krill.glitch.me</code-box>
+                <br>in the text input box below "Privacy Sandbox Enrollment Overrides"
+              </li>
+              <li>To the right, toggle the value for the flag to "Enabled"</li>
+              <li>Click "Relaunch" in the bottom right corner<br>
+            <img src="https://cdn.glitch.global/299277f2-19a3-45d8-8a11-ccbaff9d6682/flag-screenshot.png?v=1712009293179" alt="Screenshot of chrome://flags/#privacy-sandbox-enrollment-overrides"/></li>
+          </ul>
+      </h3>
+     </p>
+    
+    
+    
+    
+    
+          
+  <hr class="custom-divider">
+  <p>
+    <h2 id="demo">Create And Run Simultaneous Shared Storage Worklets</h2>
+  </p>
+
+
+   <p>
+      <h3>
+        Enter the number of worklets to create, then click the <strong><a href="#go">Go</a></strong> button to run simultaneous example worklets.
+     </h3>
+   </p>
+  
+    <p> 
+    <h3>
+      <fieldset id="#go">
+        <label for="worklet-count">Number of worklets: </label>
+        <input type="number" id="worklet-count" value="1" min="1">
+        <button data-doc="/quick">Go</button>
+      </fieldset>
+    </h3>
+    </p>
+
+   <p>
+     <iframe id="displayIframe"></iframe> 
+   </p>
+
+   <script>
+     const buttons = document.querySelectorAll('button');
+     const iframe = document.getElementById('displayIframe');
+     let queryString = (localStorage.getItem('theme') === 'dark') ? '?theme=dark' : ''; 
+     iframe.src = `/default-frame${queryString}`;
+     
+     buttons.forEach(button => {
+       button.addEventListener('click', (event) => {
+         queryString = (localStorage.getItem('theme') === 'dark') ? '?theme=dark' : ''; 
+         let docUrl = event.target.dataset.doc;
+         if (!docUrl) {
+           return;
+         }
+         let workletCount = 0;
+         if (docUrl === '/quick') {
+           workletCount = document.getElementById('worklet-count').value;
+         }
+         docUrl += queryString ? `${queryString}&num=${workletCount}` : `?num=${workletCount}`;
+         iframe.src = docUrl; 
+      });
+    });
+        
+    // Table of Contents
+    const h2Elements = document.querySelectorAll('h2');
+    const tocList = document.querySelector('#toc ul');
+    h2Elements.forEach(h2 => {
+      const listItem = document.createElement('li');
+      const anchor = document.createElement('a');
+      anchor.href = `#${h2.id}`;
+      anchor.textContent = h2.textContent;
+      listItem.appendChild(anchor);
+      tocList.appendChild(listItem);
+    });
+  </script>
+  </body>
+</html>
