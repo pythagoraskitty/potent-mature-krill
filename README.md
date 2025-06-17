@@ -1,2 +1,3 @@
-# potent-mature-krill
-glitch project
+# Demo of Shared Storage
+
+A demo of using shared storage worklets

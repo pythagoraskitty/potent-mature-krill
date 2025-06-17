@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="https://cdn.glitch.global/3fefe35b-bbb3-4e52-b0f1-f94d09bc62e4/favicon.ico?v=1709751697719" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Shared Storage Demo: quick function</title>
+
+    <!-- import the webpage's stylesheet -->
+    <link rel="stylesheet" href="/inner-style.css"/>
+    <script src="/code-box"></script>
+  </head>
+  <body>
+    
+    <!-- this is the start of content -->
+
+    <h2>
+      Shared Storage Demo: quick function
+    </h2>
+    
+    <script src="/utils"></script>
+    
+    <script id="main">
+      function runQuick(index) {
+        const fencedFrame = document.createElement('fencedframe');
+        fencedFrame.style.display = 'none';
+        document.body.append(fencedFrame);
+        
+        return window.sharedStorage.createWorklet('/quick-module.js') 
+          .then((worklet) => {
+            return worklet.selectURL( 
+              'quick', 
+              generateURLs('/quick-inner', 8),
+              { 
+                data: {}, 
+                savedQuery: "quick",
+                resolveToConfig: true 
+              } 
+            ); 
+          }) 
+          .then((frameConfig) => { 
+            fencedFrame.config = frameConfig;
+          }) 
+          .catch((error) => { 
+            console.error("Error in fenced frame creation for index:", index, error); 
+          }); 
+      }
+      
+      const promises = [];
+      const numberOfFrames = {{numWorklets}};
+      
+      for (let i = 0; i < numberOfFrames; i++) {
+        promises.push(runQuick(i));
+      }
+      
+      Promise.all(promises)
+        .then((results) => {
+          console.log('All', numberOfFrames, 'fenced frames were configured successfully!');
+          console.log('Results:', results);
+        })
+        .catch((error) => {
+          console.error('An error occurred in at least one of the frame setups:', error);
+        });
+    </script>
+    
+    <h3>
+      Client Shared Storage Module:
+      <br id="breakForModule"><code-box>{{scriptText}}</code-box>
+    </h3>
+    
+    <h3>
+      Client Main JavaScript:
+      <br id="breakForCode"><script>displayScriptInCodeBoxAfterElement('main', 'breakForCode');</script>
+    </h3>
+    <script src="/dark-mode"></script>
+  </body>
+</html>
